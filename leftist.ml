@@ -1,14 +1,14 @@
-type 'a queue = | Node of 'a queue * 'a queue * 'a * int | Leaf;;
+type 'a queue = | Node of 'a queue * 'a queue * 'a * int | Null;;
 
 exception Empty;; 
-let empty = Leaf;;
-let make_queue a = Node(Leaf, Leaf, a, 0);;
+let empty = Null;;
+let make_queue a = Node(Null, Null, a, 0);;
 let get_npl a = match a with 
-    | Leaf -> 0
+    | Null -> 0
     | Node (_, _, _, npl) -> npl;;
 
 let rec join a b = match a, b with 
-    | (Leaf, tr) | (tr, Leaf) -> tr
+    | (Null, tr) | (tr, Null) -> tr
     | Node (l1, r1, val1, npl1), Node(l2, r2, val2, npl2) -> if(val1 <= val2)
     then let new_r = join r1 b in if((get_npl l1) >= (get_npl new_r)) 
         then Node(l1, new_r, val1, (get_npl new_r)+1)
@@ -18,7 +18,7 @@ let rec join a b = match a, b with
 let add b q = join q (make_queue b);;
 let delete_min q = match q with
     | Node(l, r, el, npl) -> (el, (join l r))
-    | Leaf -> raise Empty;;
+    | Null -> raise Empty;;
 let is_empty a = match a with 
-    | Leaf -> true
+    | Null -> true
     | _ -> false;;
